@@ -35,7 +35,7 @@ std::shared_ptr<pqxx::connection> ConnectionPool::getConnection() {
       busy_connections_mtx.unlock();
       free_connections_mtx.unlock();
     }
-    usleep(250000);
+    usleep(1000);
   }
 }
 
