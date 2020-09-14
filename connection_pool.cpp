@@ -5,6 +5,18 @@ ConnectionPool::ConnectionPool(ConnectionInfoParser::ConnectionType
   : connection_info_parser(connection_type), max_connections(max_connections)
 {}
 
+ConnectionPool::ConnectionPool(ConnectionPool& rhs)
+  : connection_info_parser(rhs.connection_info_parser),
+  max_connections(rhs.max_connections)
+{
+  rhs.free_connections_mtx.lock();
+  rhs.busy_connections_mtx.lock();
+  free_connections = rhs.free_connections;
+  rhs.free_connections_mtx.unlock();
+  busy_connections = rhs.busy_connections;
+  rhs.busy_connections_mtx.unlock();
+}
+
 std::shared_ptr<pqxx::connection> ConnectionPool::getConnection() {
   while (true) {
     free_connections_mtx.lock();

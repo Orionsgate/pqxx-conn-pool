@@ -22,6 +22,7 @@ class ConnectionPool {
   public:
     ConnectionPool(ConnectionInfoParser::ConnectionType connection_type,
       int max_connections);
+    ConnectionPool(ConnectionPool& rhs);
     std::shared_ptr<pqxx::connection> getConnection();
     void returnConnection(std::shared_ptr<pqxx::connection> connection);
 };
