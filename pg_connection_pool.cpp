@@ -46,7 +46,8 @@ std::shared_ptr<pqxx::connection> PGConnectionPool::getConnection() {
           conn_is_broken = false;
         } catch (const pqxx::broken_connection& broken_connection) {
           std::cout << broken_connection.what();
-          std::cout << "Broken connection.\n";
+          conn_is_broken = true;
+          usleep(5000000);
         }
       }
       busy_connections_mtx.unlock();
