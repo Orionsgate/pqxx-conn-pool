@@ -51,6 +51,21 @@ std::shared_ptr<pqxx::connection> PGConnectionPool::getConnection() {
   }
 }
 
+void PGConnectionPool::destroyConnection(std::shared_ptr<pqxx::connection>
+  connection)
+{
+  busy_connections_mtx.lock();
+  for (auto conn_iter = busy_connections.begin();
+    conn_iter != busy_connections.end(); conn_iter++)
+  {
+    if (connection == *conn_iter) {
+      busy_connections.erase(conn_iter);
+      break;
+    }
+  }
+  busy_connections_mtx.unlock();
+}
+
 void PGConnectionPool::returnConnection(std::shared_ptr<pqxx::connection>
   connection)
 {

@@ -36,6 +36,8 @@ class PGConnectionPool {
 
     std::shared_ptr<pqxx::connection> getConnection();
 
+    void destroyConnection(std::shared_ptr<pqxx::connection> connection);
+
     void returnConnection(std::shared_ptr<pqxx::connection> connection);
 
 };
