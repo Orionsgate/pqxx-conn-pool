@@ -32,15 +32,22 @@ std::shared_ptr<pqxx::connection> PGConnectionPool::getConnection() {
       < max_connections)
     {
       free_connections_mtx.unlock();
-      std::shared_ptr<pqxx::connection> connection =
-        std::make_shared<pqxx::connection>(
-          "dbname = " + connection_info_parser.getDBName() +
-          " user = " + connection_info_parser.getDBUser() +
-          " password = " + connection_info_parser.getDBPass() +
-          " host = " + connection_info_parser.getServerIP() +
-          " port = " + connection_info_parser.getServerPort()
-        );
-      busy_connections.push_back(connection);
+      bool conn_is_broken = true;
+      std::shared_ptr<pqxx::connection> connection;
+      while (conn_is_broken) {
+        try {
+          connection = std::make_shared<pqxx::connection>(
+            "dbname = " + connection_info_parser.getDBName() +
+            " user = " + connection_info_parser.getDBUser() +
+            " password = " + connection_info_parser.getDBPass() +
+            " host = " + connection_info_parser.getServerIP() +
+            " port = " + connection_info_parser.getServerPort());
+          busy_connections.push_back(connection);
+          conn_is_broken = false;
+        } catch (const pqxx::broken_connection& broken_connection) {
+          //add log statement later
+        }
+      }
       busy_connections_mtx.unlock();
       return connection;
     } else {
