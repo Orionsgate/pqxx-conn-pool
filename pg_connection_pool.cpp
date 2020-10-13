@@ -1,11 +1,11 @@
-#include "connection_pool.h"
+#include "pg_connection_pool.h"
 
-ConnectionPool::ConnectionPool(ConnectionInfoParser::ConnectionType
+PGConnectionPool::PGConnectionPool(PGConnectionInfoParser::ConnectionType
   connection_type, int max_connections)
   : connection_info_parser(connection_type), max_connections(max_connections)
 {}
 
-ConnectionPool::ConnectionPool(ConnectionPool& rhs)
+PGConnectionPool::PGConnectionPool(PGConnectionPool& rhs)
   : connection_info_parser(rhs.connection_info_parser),
   max_connections(rhs.max_connections)
 {
@@ -17,7 +17,7 @@ ConnectionPool::ConnectionPool(ConnectionPool& rhs)
   rhs.busy_connections_mtx.unlock();
 }
 
-std::shared_ptr<pqxx::connection> ConnectionPool::getConnection() {
+std::shared_ptr<pqxx::connection> PGConnectionPool::getConnection() {
   while (true) {
     free_connections_mtx.lock();
     busy_connections_mtx.lock();
@@ -51,7 +51,7 @@ std::shared_ptr<pqxx::connection> ConnectionPool::getConnection() {
   }
 }
 
-void ConnectionPool::returnConnection(std::shared_ptr<pqxx::connection>
+void PGConnectionPool::returnConnection(std::shared_ptr<pqxx::connection>
   connection)
 {
   bool found = false;

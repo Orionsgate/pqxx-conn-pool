@@ -9,22 +9,35 @@
 #include <vector>
 #include <stdexcept>
 
-#include "connection_info_parser.h"
+#include "pg_connection_info_parser.h"
 
-class ConnectionPool {
+class PGConnectionPool {
+
   private:
-    ConnectionInfoParser connection_info_parser;
+
+    PGConnectionInfoParser connection_info_parser;
+
     const int max_connections;
+
     std::mutex free_connections_mtx;
+
     std::mutex busy_connections_mtx;
+
     std::vector<std::shared_ptr<pqxx::connection>> free_connections;
+
     std::vector<std::shared_ptr<pqxx::connection>> busy_connections;
+
   public:
-    ConnectionPool(ConnectionInfoParser::ConnectionType connection_type,
+
+    PGConnectionPool(PGConnectionInfoParser::ConnectionType connection_type,
       int max_connections);
-    ConnectionPool(ConnectionPool& rhs);
+
+    PGConnectionPool(PGConnectionPool& rhs);
+
     std::shared_ptr<pqxx::connection> getConnection();
+
     void returnConnection(std::shared_ptr<pqxx::connection> connection);
+
 };
 
 #endif

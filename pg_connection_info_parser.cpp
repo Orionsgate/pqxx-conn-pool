@@ -1,8 +1,8 @@
-#include "connection_info_parser.h"
+#include "pg_connection_info_parser.h"
 
 #include <filesystem>
 
-ConnectionInfoParser::ConnectionInfoParser(ConnectionType connection_type) {
+PGConnectionInfoParser::PGConnectionInfoParser(ConnectionType connection_type) {
   std::ifstream connection_info_file;
   if (connection_type == ConnectionType::READ) {
     connection_info_file.open("conf/db_connection.ini");
@@ -32,22 +32,22 @@ ConnectionInfoParser::ConnectionInfoParser(ConnectionType connection_type) {
   }
 }
 
-std::string ConnectionInfoParser::getServerIP() const {
+std::string PGConnectionInfoParser::getServerIP() const {
   return connection_info[0];
 }
 
-std::string ConnectionInfoParser::getServerPort() const {
+std::string PGConnectionInfoParser::getServerPort() const {
   return connection_info[1];
 }
 
-std::string ConnectionInfoParser::getDBName() const {
+std::string PGConnectionInfoParser::getDBName() const {
   return connection_info[2];
 }
 
-std::string ConnectionInfoParser::getDBUser() const {
+std::string PGConnectionInfoParser::getDBUser() const {
   return connection_info[3];
 }
 
-std::string ConnectionInfoParser::getDBPass() const {
+std::string PGConnectionInfoParser::getDBPass() const {
   return connection_info[4];
 }
