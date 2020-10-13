@@ -1,5 +1,5 @@
 #include "pg_connection_pool.h"
-
+#include <iostream>
 PGConnectionPool::PGConnectionPool(PGConnectionInfoParser::ConnectionType
   connection_type, int max_connections)
   : connection_info_parser(connection_type), max_connections(max_connections)
@@ -45,7 +45,8 @@ std::shared_ptr<pqxx::connection> PGConnectionPool::getConnection() {
           busy_connections.push_back(connection);
           conn_is_broken = false;
         } catch (const pqxx::broken_connection& broken_connection) {
-          //add log statement later
+          std::cout << broken_connection.what();
+          std::cout << "Broken connection.\n";
         }
       }
       busy_connections_mtx.unlock();
